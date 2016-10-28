@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>Alissa's Blog</title>
+  </head>
+  <body>
+    
+    <h1>Alissa's Blog</h1>
+
+    {% for post in posts %}
+    <hr/>
+    <h3>{{post.subject}}</h3>
+    <div>
+      {{post.content}}
+    </div>
+    {% endfor %}
+
+
+  </body>
+</html>
