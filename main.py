@@ -42,11 +42,11 @@ class Handler(webapp2.RequestHandler):
 
     def set_secure_cookie(self, name, val):
         cookie_id = security.make_secure_val(val)
-        self.response.headers.add_header('Set-Cookie','%=%, Path=/' % (name, cookie_id))
+        self.response.headers.add_header('Set-Cookie','%s=%s, Path=/' % (name, cookie_id))
 
     def read_secure_cookie(self, name):
         cookie_id = self.request.cookies.get(name)
-        return cookie_id and security.check_secure_val(cookie_val)
+        return cookie_id and security.check_secure_val(cookie_id)
 
 class MainPage(Handler):
     def get(self):
@@ -139,18 +139,27 @@ class Registration(Handler):
             if not models.User.by_name(username):
                 user = models.User.register(username, password, email)
                 user.put()
-                self.redirect("/")
+                user_id = str(user.key().id())
+                self.set_secure_cookie("id", user_id)
+                self.redirect("/welcome")
             else:
                 user_exists_error = "this user already exists"
                 self.write_form(user_exists_error = user_exists_error)
         else:
             self.write_form(username_error, password_error, verify_error, email_error, username, email)
 
-
+class Welcome(Handler):
+    def get(self):
+        username = ""
+        user_id = int(self.read_secure_cookie("id"))
+        username = models.User.by_id(user_id).username
+        print username
+        self.render('welcome.html', username = username)
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/newpost', NewPost),
     (r'/post/(\d+)', ShowPost),
-    ('/signup', Registration)
+    ('/signup', Registration),
+    ('/welcome', Welcome)
 ], debug=True)
