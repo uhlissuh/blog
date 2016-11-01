@@ -18,6 +18,10 @@ import webapp2
 import os
 import jinja2
 import re
+import hashlib
+import random
+import hmac
+from string import letters
 
 from google.appengine.ext import db
 
@@ -25,20 +29,58 @@ USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASSWORD_RE = re.compile(r"^.{3,20}$")
 EMAIL_RE = re.compile(r"^[\S]+@[\S]+.[\S]+$")
 
+secret = "fdfdf434@!^&*AAAA"
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                 autoescape = True)
+
+#secure cookie stuff
+def make_secure_val(val):
+    return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
+
+def check_secure_val(secure_val):
+    val = secure_val.split('|')[0]
+    if secure_val == make_secure_val(val):
+        return val
+
+#user encryption stuff
+def make_salt(length = 5):
+    return ''.join(random.choice(letters) for x in xrange(length))
+
+def make_password_hash(name, pw, salt = None):
+    if not salt:
+        salt = make_salt()
+    h = hashlib.sha256(name + pw + salt).hexdigest()
+    return '%s|%s' % (h, salt)
+
+def valid_pw(name, pw, h):
+    salt = h.split('|')[0]
+    return h == make_password_hash(name, pw, salt)
+
 
 class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         t = jinja_env.get_template(template)
         self.response.out.write(t.render(**kw))
 
+    def set_secure_cookie(self, name, val):
+        cookie_id = make_secure_val(val)
+        self.response.headers.add_header('Set-Cookie','%=%, Path=/' % (name, cookie_id))
+
+    def read_secure_cookie(self, name):
+        cookie_id = self.request.cookies.get(name)
+        return cookie_id and check_secure_val(cookie_val)
+
 class BlogPost(db.Model):
     subject = db.StringProperty(required = True)
     content = db.StringProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
+
+class User(db.Model):
+     username = db.StringProperty(required = True)
+     email = db.StringProperty()
+     password_hash = db.StringProperty(required = True)
 
 class MainPage(Handler):
     def get(self):
@@ -78,6 +120,16 @@ class ShowPost(Handler):
         self.render("post.html", subject=subject, content=content, created=created)
 
 class Registration(Handler):
+
+    def valid_username(username):
+        return USER_RE.match(username)
+
+    def valid_password(password):
+        return PASSWORD_RE.match(password)
+
+    def valid_email(email):
+        return EMAIL_RE.match(email)
+
     def write_form(self, username_error="", password_error="", verify_error="", email_error="", username="", email=""):
         self.render("usersignupform.html", username_error = username_error, password_error = password_error, verify_error = verify_error, email_error = email_error, username = username, email = email)
 
@@ -85,14 +137,6 @@ class Registration(Handler):
         self.write_form()
 
     def post(self):
-        def valid_username(username):
-            return USER_RE.match(username)
-
-        def valid_password(password):
-            return PASSWORD_RE.match(password)
-
-        def valid_email(email):
-            return EMAIL_RE.match(email)
 
         username = self.request.get("username")
         password = self.request.get("password")
@@ -118,6 +162,11 @@ class Registration(Handler):
 
 
         if username_error == "" and password_error == "" and verify_error == "" and email_error=="":
+            #u = User.all().filter('name' = name).get()
+
+            password_hash = make_password_hash(username, password)
+            user = User(username = username, email = email, password_hash = password_hash)
+            user.put()
             self.redirect("/")
         else:
             self.write_form(username_error, password_error, verify_error, email_error, username, email)
