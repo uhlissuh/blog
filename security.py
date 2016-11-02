@@ -26,5 +26,5 @@ def make_password_hash(name, pw, salt = None):
     return '%s|%s' % (h, salt)
 
 def valid_pw(name, pw, h):
-    salt = h.split('|')[0]
+    salt = h.split('|')[1]
     return h == make_password_hash(name, pw, salt)
