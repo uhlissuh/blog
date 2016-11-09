@@ -42,11 +42,14 @@ class Handler(webapp2.RequestHandler):
 
     def set_secure_cookie(self, name, val):
         cookie_id = security.make_secure_val(val)
-        self.response.headers.add_header('Set-Cookie','%s=%s, Path=/' % (name, cookie_id))
+        self.response.headers.add_header('Set-Cookie','%s=%s; Path=/' % (name, cookie_id))
 
     def read_secure_cookie(self, name):
         cookie_id = self.request.cookies.get(name)
         return cookie_id and security.check_secure_val(cookie_id)
+
+    def logout(self):
+        self.response.headers.add_header('Set-Cookie','id=; Path=/')
 
 class MainPage(Handler):
     def get(self):
@@ -64,9 +67,10 @@ class NewPost(Handler):
     def post(self):
         subject = self.request.get("subject")
         content = self.request.get("content")
+        author_id = str(self.read_secure_cookie("id"))
 
-        if subject and content:
-            p = models.BlogPost(subject = subject, content = content)
+        if subject and content and author_id:
+            p = models.BlogPost(subject = subject, content = content, author_id = author_id)
             p.put()
 
             post_id = str(p.key().id())
@@ -82,8 +86,14 @@ class ShowPost(Handler):
         subject = models.BlogPost.get_by_id(int(id)).subject
         content = models.BlogPost.get_by_id(int(id)).content
         created = models.BlogPost.get_by_id(int(id)).created
+        user_id = id
 
-        self.render("post.html", subject=subject, content=content, created=created)
+        self.render("post.html", subject=subject, content=content, created=created, user_id = user_id)
+
+    def post(self, id):
+        print models.BlogPost.get_by_id(int(id))
+        models.BlogPost.get_by_id(int(id)).delete()
+        self.redirect('/')
 
 class Registration(Handler):
 
@@ -150,10 +160,12 @@ class Registration(Handler):
 
 class Welcome(Handler):
     def get(self):
-        username = ""
-        user_id = int(self.read_secure_cookie("id"))
-        username = models.User.by_id(user_id).username
-        self.render('welcome.html', username = username)
+        if self.read_secure_cookie("id"):
+            user_id = int(self.read_secure_cookie("id"))
+            username = models.User.by_id(user_id).username
+            self.render('welcome.html', username = username)
+        else:
+            self.redirect('/login')
 
 class Login(Handler):
     def write_form(self, no_user_error="", incorrect_password_error="", username=""):
@@ -183,12 +195,24 @@ class Login(Handler):
         else:
             no_user_error = "this user does not exist"
             self.write_form(no_user_error, incorrect_password_error, username)
-            
+
+class Logout(Handler):
+    def get(self):
+        self.logout()
+        self.redirect('/signup')
+
+class EditPost(Handler):
+    def get(self, id):
+        self.render("/editpost.html")
+
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/newpost', NewPost),
     (r'/post/(\d+)', ShowPost),
     ('/signup', Registration),
     ('/welcome', Welcome),
-    ('/login', Login)
+    ('/login', Login),
+    ('/logout', Logout),
+    (r'/editpost/(\d+)', EditPost)
+
 ], debug=True)

@@ -3,12 +3,13 @@
     <title>Alissa's Blog</title>
   </head>
   <body>
-    
+
     <h1>Alissa's Blog</h1>
 
     {% for post in posts %}
     <hr/>
-    <h3>{{post.subject}}</h3>
+    <a href="/post/{{post.key().id()}}"><h3>{{post.subject}}</h3></a>
+
     <div>
       {{post.content}}
     </div>

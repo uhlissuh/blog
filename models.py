@@ -5,6 +5,11 @@ class BlogPost(db.Model):
     subject = db.StringProperty(required = True)
     content = db.StringProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
+    author_id = db.StringProperty(required = True)
+
+    @classmethod
+    def by_id(cls, uid):
+        BlogPost.get_by_id(uid)
 
 class User(db.Model):
     username = db.StringProperty(required = True)

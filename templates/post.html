@@ -1,12 +1,23 @@
 <html>
+
   <head>
     <title>Post</title>
   </head>
+
   <body>
+    <a href="/"><h1>Alissa's Blog</h1></a>
     <h2>{{subject}}</h2>
     <h4>{{created}}</h4>
+    <h4>written by </h4>
     <div>
       {{content}}
     </div>
+
+    <a href="/editpost/{{user_id}}">edit</a>
+    <form method="POST">
+      <input type="submit" value="delete"/>
+    </form>
+
   </body>
+
 </html>
