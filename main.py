@@ -91,9 +91,19 @@ class ShowPost(Handler):
         self.render("post.html", subject=subject, content=content, created=created, user_id = user_id)
 
     def post(self, id):
-        print models.BlogPost.get_by_id(int(id))
-        models.BlogPost.get_by_id(int(id)).delete()
-        self.redirect('/')
+        blog = models.BlogPost.get_by_id(int(id))
+        blog_user_id = str(blog.author_id)
+        cookie_id = str(self.read_secure_cookie("id"))
+        if blog_user_id == cookie_id:
+            models.BlogPost.get_by_id(int(id)).delete()
+            self.redirect('/')
+        else:
+            subject = models.BlogPost.get_by_id(int(id)).subject
+            content = models.BlogPost.get_by_id(int(id)).content
+            created = models.BlogPost.get_by_id(int(id)).created
+            user_id = id
+            delete_error = "only the author of this post can delete it"
+            self.render("post.html", subject=subject, content=content, created=created, user_id = user_id, delete_error = delete_error)
 
 class Registration(Handler):
 
