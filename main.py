@@ -213,7 +213,28 @@ class Logout(Handler):
 
 class EditPost(Handler):
     def get(self, id):
-        self.render("/editpost.html")
+        blog = models.BlogPost.get_by_id(int(id))
+        subject = blog.subject
+        content = blog.content
+
+        self.render("/editpost.html", subject = subject, content = content)
+
+    def post(self, id):
+        blog = models.BlogPost.get_by_id(int(id))
+        author_id = str(blog.author_id)
+
+        subject = self.request.get("subject")
+        content = self.request.get("content")
+
+        if author_id == str(self.read_secure_cookie("id")):
+            blog.subject = subject
+            blog.content = content
+            
+            blog.put()
+            self.redirect('/')
+        else:
+            error = "You cannot edit this"
+            self.render("/editpost.html", subject = subject, content = content, error = error)
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),

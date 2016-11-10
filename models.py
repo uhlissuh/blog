@@ -5,6 +5,7 @@ class BlogPost(db.Model):
     subject = db.StringProperty(required = True)
     content = db.StringProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
+    updated = db.DateTimeProperty(auto_now = True)
     author_id = db.StringProperty(required = True)
 
     @classmethod
