@@ -30,7 +30,7 @@
     {% if belongs_to_current_user %}
     <a href="/editpost/{{id}}">edit</a>
 
-    <form method="POST">
+    <form method="POST" action="/deletepost/{{id}}">
       <input type="submit" value="delete"/>
     </form>
     {% endif %}

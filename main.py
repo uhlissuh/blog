@@ -12,6 +12,7 @@ from handlers.logout import Logout
 from handlers.editpost import EditPost
 from handlers.like import Like
 from handlers.unlike import Unlike
+from handlers.delete import DeletePost
 import webapp2
 import security
 import models
@@ -27,6 +28,7 @@ app = webapp2.WSGIApplication([
     ('/logout', Logout),
     (r'/editpost/(\d+)', EditPost),
     (r'/post/(\d+)/like', Like),
-    (r'/post/(\d+)/unlike', Unlike)
+    (r'/post/(\d+)/unlike', Unlike),
+    (r'/deletepost/(\d+)', DeletePost)
 
 ], debug=True)

@@ -29,12 +29,4 @@ class ShowPost(Handler):
                     belongs_to_current_user = belongs_to_current_user,
                     liked_by_current_user = liked_by_current_user)
 
-    def post(self, id):
-        blog = models.BlogPost.by_id(int(id))
-        blog_user_id = str(blog.author_id)
-        cookie_id = str(self.read_secure_cookie("id"))
-        if blog_user_id == cookie_id:
-            models.BlogPost.by_id(int(id)).delete()
-            self.redirect('/')
-        else:
-            self.response.set_status(404, message="not permitted")
+    
