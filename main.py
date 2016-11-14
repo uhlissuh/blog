@@ -83,12 +83,27 @@ class NewPost(Handler):
 
 class ShowPost(Handler):
     def get(self, id):
-        subject = models.BlogPost.get_by_id(int(id)).subject
-        content = models.BlogPost.get_by_id(int(id)).content
-        created = models.BlogPost.get_by_id(int(id)).created
-        user_id = id
+        post = models.BlogPost.get_by_id(int(id))
+        subject = post.subject
+        content = post.content
+        created = post.created
+        author_id = post.author_id
+        belongs_to_current_user = False
+        cookie_id = self.read_secure_cookie("id")
 
-        self.render("post.html", subject=subject, content=content, created=created, user_id = user_id)
+        liked_by_current_user =  models.Like.all().filter("blog_id =", int(id)).filter("user_id =", int(cookie_id)).get()
+
+        if author_id == str(cookie_id):
+            belongs_to_current_user = True
+
+
+        self.render("post.html",
+                    subject=subject,
+                    content=content,
+                    created=created,
+                    id = id,
+                    belongs_to_current_user = belongs_to_current_user
+                    )
 
     def post(self, id):
         blog = models.BlogPost.get_by_id(int(id))
@@ -98,12 +113,7 @@ class ShowPost(Handler):
             models.BlogPost.get_by_id(int(id)).delete()
             self.redirect('/')
         else:
-            subject = models.BlogPost.get_by_id(int(id)).subject
-            content = models.BlogPost.get_by_id(int(id)).content
-            created = models.BlogPost.get_by_id(int(id)).created
-            user_id = id
-            delete_error = "only the author of this post can delete it"
-            self.render("post.html", subject=subject, content=content, created=created, user_id = user_id, delete_error = delete_error)
+            self.response.set_status(404, message="not permitted")
 
 class Registration(Handler):
 
@@ -221,7 +231,7 @@ class EditPost(Handler):
 
     def post(self, id):
         blog = models.BlogPost.get_by_id(int(id))
-        author_id = str(blog.author_id)
+        author_id = blog.author_id
 
         subject = self.request.get("subject")
         content = self.request.get("content")
@@ -229,12 +239,30 @@ class EditPost(Handler):
         if author_id == str(self.read_secure_cookie("id")):
             blog.subject = subject
             blog.content = content
-            
+
             blog.put()
             self.redirect('/')
         else:
-            error = "You cannot edit this"
-            self.render("/editpost.html", subject = subject, content = content, error = error)
+            self.response.set_status(404)
+            self.render('/404_error.html')
+
+
+class Like(Handler):
+    def post(self, id):
+        author_id = models.BlogPost.by_id(int(id))
+        user_id = self.read_secure_cookie("id")
+        if user_id != author_id:
+            like = models.Like(user_id = int(user_id), blog_id = int(id))
+            like.put()
+            self.redirect('/post/'+ id)
+        else:
+            self.redirect('/post/'+ id)
+
+
+
+class Unlike(Handler):
+    def post(self, id):
+        print("great")
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
@@ -244,6 +272,8 @@ app = webapp2.WSGIApplication([
     ('/welcome', Welcome),
     ('/login', Login),
     ('/logout', Logout),
-    (r'/editpost/(\d+)', EditPost)
+    (r'/editpost/(\d+)', EditPost),
+    (r'/post/(\d+)/like', Like),
+    (r'/post/(\d+)/unlike', Unlike)
 
 ], debug=True)

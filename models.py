@@ -12,6 +12,10 @@ class BlogPost(db.Model):
     def by_id(cls, uid):
         BlogPost.get_by_id(uid)
 
+class Like(db.Model):
+    user_id = db.IntegerProperty(required = True)
+    blog_id = db.IntegerProperty(required = True)
+
 class User(db.Model):
     username = db.StringProperty(required = True)
     email = db.StringProperty()

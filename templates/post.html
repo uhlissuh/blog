@@ -7,19 +7,27 @@
   <body>
     <a href="/"><h1>Alissa's Blog</h1></a>
     <h2>{{subject}}</h2>
+
+    {% if not belongs_to_current_user %}
+    <form method="POST" action="/post/{{id}}/like">
+      <input type="submit" value="like" />
+    </form>
+    {% endif %}
+
+
     <h4>{{created}}</h4>
-    <h4>written by </h4>
+
     <div>
       {{content}}
     </div>
 
-    <a href="/editpost/{{user_id}}">edit</a>
+    {% if belongs_to_current_user %}
+    <a href="/editpost/{{id}}">edit</a>
+
     <form method="POST">
       <input type="submit" value="delete"/>
     </form>
-    <div>
-      {{delete_error}}
-    </div>
+    {% endif %}
 
   </body>
 
