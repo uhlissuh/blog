@@ -1,5 +1,5 @@
 from handler import Handler
-
+import models
 
 class Unlike(Handler):
     def post(self, id):

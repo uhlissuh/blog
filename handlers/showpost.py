@@ -1,4 +1,6 @@
 from handler import Handler
+import models
+
 
 
 class ShowPost(Handler):
