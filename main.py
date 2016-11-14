@@ -91,7 +91,9 @@ class ShowPost(Handler):
         belongs_to_current_user = False
         cookie_id = self.read_secure_cookie("id")
 
-        liked_by_current_user =  models.Like.all().filter("blog_id =", int(id)).filter("user_id =", int(cookie_id)).get()
+        liked_by_current_user =  models.Like.all() \
+            .filter("blog_id =", int(id)) \
+            .filter("user_id =", int(cookie_id)).get()
 
         if author_id == str(cookie_id):
             belongs_to_current_user = True
@@ -102,8 +104,8 @@ class ShowPost(Handler):
                     content=content,
                     created=created,
                     id = id,
-                    belongs_to_current_user = belongs_to_current_user
-                    )
+                    belongs_to_current_user = belongs_to_current_user,
+                    liked_by_current_user = liked_by_current_user)
 
     def post(self, id):
         blog = models.BlogPost.get_by_id(int(id))
@@ -249,7 +251,7 @@ class EditPost(Handler):
 
 class Like(Handler):
     def post(self, id):
-        author_id = models.BlogPost.by_id(int(id))
+        author_id = models.BlogPost.by_id(int(id)).author_id
         user_id = self.read_secure_cookie("id")
         if user_id != author_id:
             like = models.Like(user_id = int(user_id), blog_id = int(id))
@@ -262,7 +264,15 @@ class Like(Handler):
 
 class Unlike(Handler):
     def post(self, id):
-        print("great")
+        author_id = models.BlogPost.by_id(int(id)).author_id
+        user_id = self.read_secure_cookie("id")
+        if user_id != author_id:
+            like =  models.Like.all().filter("blog_id =", int(id)).filter("user_id =", int(user_id)).get()
+            like.delete()
+            self.redirect('/post/'+ id)
+        else:
+            self.response.set_status(404)
+            self.render('/404_error.html')
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),

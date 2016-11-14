@@ -6,11 +6,11 @@ class BlogPost(db.Model):
     content = db.StringProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
     updated = db.DateTimeProperty(auto_now = True)
-    author_id = db.StringProperty(required = True)
+    author_id = db.StringProperty()
 
     @classmethod
     def by_id(cls, uid):
-        BlogPost.get_by_id(uid)
+        return BlogPost.get_by_id(uid)
 
 class Like(db.Model):
     user_id = db.IntegerProperty(required = True)

@@ -9,9 +9,15 @@
     <h2>{{subject}}</h2>
 
     {% if not belongs_to_current_user %}
-    <form method="POST" action="/post/{{id}}/like">
-      <input type="submit" value="like" />
-    </form>
+      {% if not liked_by_current_user %}
+        <form method="POST" action="/post/{{id}}/like">
+          <input type="submit" value="like" />
+        </form>
+      {% else %}
+      <form method="POST" action="/post/{{id}}/unlike">
+        <input type="submit" value="unlike" />
+      </form>
+      {% endif %}
     {% endif %}
 
 
