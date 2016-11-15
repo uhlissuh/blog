@@ -20,6 +20,7 @@ class ShowPost(Handler):
         if author_id == str(cookie_id):
             belongs_to_current_user = True
 
+        number_of_likes = models.Like.all().filter("blog_id =", int(id)).count()
 
         self.render("post.html",
                     subject=subject,
@@ -27,6 +28,5 @@ class ShowPost(Handler):
                     created=created,
                     id = id,
                     belongs_to_current_user = belongs_to_current_user,
-                    liked_by_current_user = liked_by_current_user)
-
-    
+                    liked_by_current_user = liked_by_current_user,
+                    number_of_likes = number_of_likes)
