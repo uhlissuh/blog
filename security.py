@@ -6,7 +6,7 @@ import hmac
 secret = "fdfdf434@!^&*AAAA"
 
 
-#secure cookie stuff
+#secure cookie methods
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
@@ -15,7 +15,7 @@ def check_secure_val(secure_val):
     if secure_val == make_secure_val(val):
         return val
 
-#user encryption stuff
+#user encryption methods
 def make_salt(length = 5):
     return ''.join(random.choice(letters) for x in xrange(length))
 

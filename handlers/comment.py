@@ -1,6 +1,7 @@
 from handler import Handler
 import models
 
+#displays original blog post with an area to comment at the bottom
 class Comment(Handler):
     def render_page(self, id, error =""):
         cookie_id = self.read_secure_cookie("id")

@@ -3,7 +3,8 @@ import models
 
 
 
-
+#shows an individual post with the total likes the post has received and comments.
+#Blog author can edit or delete. Other users can like. Author can comment on own post.
 class ShowPost(Handler):
     def get(self, id):
         post = models.BlogPost.by_id(int(id))
@@ -34,7 +35,6 @@ class ShowPost(Handler):
         number_of_likes = models.Like.all().filter("blog_id =", int(id)).count()
 
         comments = models.Comment.all().filter("blog_id =", int(id)).order("-created")
-        print("this is the comments", comments)
 
         self.render("post.html",
                     subject=subject,

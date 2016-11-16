@@ -1,7 +1,7 @@
 from handler import Handler
 import models
 
-
+#per a previous assignment, when a new user registered, this page welcomes them by name
 class Welcome(Handler):
     def get(self):
         if self.read_secure_cookie("id"):

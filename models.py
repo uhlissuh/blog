@@ -1,6 +1,7 @@
 from google.appengine.ext import db
 import security
 
+#all models for the app are stored in this file
 class BlogPost(db.Model):
     subject = db.StringProperty(required = True)
     content = db.StringProperty(required = True)

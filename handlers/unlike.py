@@ -1,6 +1,7 @@
 from handler import Handler
 import models
 
+#allows a user to unlike a post they had previously liked
 class Unlike(Handler):
     def post(self, id):
         author_id = models.BlogPost.by_id(int(id)).author_id

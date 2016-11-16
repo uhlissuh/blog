@@ -1,7 +1,7 @@
 from google.appengine.ext import db
 from handler import Handler
 
-
+#displays from page of blog platform with all blog posts
 class MainPage(Handler):
     def get(self):
         is_signed_in = False

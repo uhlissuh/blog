@@ -2,13 +2,17 @@ from handler import Handler
 import models
 
 
-
+#allows logged in user to create a new post
 class NewPost(Handler):
     def render_form(self, subject="", content="", error=""):
         self.render("newpost.html", subject = subject, content = content, error = error)
 
     def get(self):
-        self.render_form()
+        cookie_id = self.read_secure_cookie('id')
+        if cookie_id:
+            self.render_form()
+        else:
+            self.redirect('/login')
 
     def post(self):
         subject = self.request.get("subject")

@@ -3,7 +3,7 @@ import models
 import security
 
 
-
+#allows an already registered user to login securely
 class Login(Handler):
     def write_form(self, no_user_error="", incorrect_password_error="", username=""):
         self.render("loginform.html",

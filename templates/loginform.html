@@ -1,11 +1,17 @@
 <html>
-  <form method="POST">
-      <label>Username <input name="username" type="text" value="{{username}}"></label>
-      <div>{{no_user_error}}</div>
-      <br>
-      <label>Password <input name="password" type="text" ></label>
-      <div>{{incorrect_password_error}}</div>
-      <br>
-      <input type="submit"/>
-  </form>
+  <head>
+    <title>Login</title>
+  </head>
+  <body>
+    <a href="/signup">sign up for account</a>
+    <form method="POST">
+        <label>Username <input name="username" type="text" value="{{username}}"></label>
+        <div>{{no_user_error}}</div>
+        <br>
+        <label>Password <input name="password" type="text" ></label>
+        <div>{{incorrect_password_error}}</div>
+        <br>
+        <input type="submit"/>
+    </form>
+  </body>
 </html>

@@ -4,13 +4,15 @@
   </head>
   <body>
 
+
     <h1>Alissa's Blog</h1>
+    <a href="/newpost">Create a Post</a>
     {% if is_signed_in %}
       <a href="/logout">logout</a>
     {% else %}
       <a href="/signup">Signup</a>
       <a href="/login">Login</a>
-    {% endif %}  
+    {% endif %}
 
     {% for post in posts %}
     <hr/>
