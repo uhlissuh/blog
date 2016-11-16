@@ -1,14 +1,14 @@
 <html>
 
   <head>
-    <title>Post</title>
+    <title>Comment on Post</title>
   </head>
 
   <body>
     <a href="/"><h1>Alissa's Blog</h1></a>
     <h2>{{subject}}</h2>
 
-    {% if logged_in and not belongs_to_current_user %}
+    {% if not belongs_to_current_user %}
       {% if not liked_by_current_user %}
         <form method="POST" action="/post/{{id}}/like">
           <input type="submit" value="like" />
@@ -23,18 +23,15 @@
     <div>
       {{number_of_likes}} likes
     </div>
-    <br>
-    <br>
+
+    <h4>{{created}}</h4>
+
     <div>
       {{content}}
     </div>
-    <br>
-    <br>
 
     {% if belongs_to_current_user %}
     <a href="/editpost/{{id}}">edit</a>
-    <br>
-    <br>
 
     <form method="POST" action="/deletepost/{{id}}">
       <input type="submit" value="delete"/>
@@ -42,28 +39,20 @@
     {% endif %}
 
     <hr/>
-    <h2>Comments</h2>
-    {% if logged_in %}
-       <a href="/post/{{id}}/comment">add comment</a>
-    {% endif %}
-    <br>
-    <br>
+
+    <h3> Comment On this Post</h3>
+
+    <form method="post">
+
+      <label>
+        <div>Your Comment</div>
+        <textarea name="content"></textarea>
+      </label>
+      <div class="error">{{error}}</div>
+      <input type="submit"/>
+    </form>
 
 
-    <div>{{error}}</div>
-
-    {% for comment in comments %}
-      <div>{{comment.content}}</div>
-
-      {% if comment.commenter_id == user_id %}
-        <a href="/post/{{id}}/editcomment/{{comment.key().id()}}">edit</a>
-        <form method="POST" action="/post/{{id}}/deletecomment/{{comment.key().id()}}">
-          <input type="submit" value="delete"/>
-      </form>
-      {% endif %}
-      <br>
-      <br>
-    {% endfor %}
   </body>
 
 </html>

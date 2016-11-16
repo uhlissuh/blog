@@ -11,3 +11,4 @@ class DeletePost(Handler):
             self.redirect('/')
         else:
             self.response.set_status(404, message="not permitted")
+            self.render('404_error.html')

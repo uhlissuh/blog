@@ -5,6 +5,12 @@
   <body>
 
     <h1>Alissa's Blog</h1>
+    {% if is_signed_in %}
+      <a href="/logout">logout</a>
+    {% else %}
+      <a href="/signup">Signup</a>
+      <a href="/login">Login</a>
+    {% endif %}  
 
     {% for post in posts %}
     <hr/>

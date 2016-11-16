@@ -16,6 +16,18 @@ class Like(db.Model):
     user_id = db.IntegerProperty(required = True)
     blog_id = db.IntegerProperty(required = True)
 
+class Comment(db.Model):
+    commenter_id = db.IntegerProperty(required = True)
+    blog_id = db. IntegerProperty(required = True)
+    content = db.StringProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    updated = db.DateTimeProperty(auto_now = True)
+
+    @classmethod
+    def by_id(cls, uid):
+        return cls.get_by_id(uid)
+
+
 class User(db.Model):
     username = db.StringProperty(required = True)
     email = db.StringProperty()
