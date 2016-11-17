@@ -26,7 +26,7 @@ class EditPost(Handler):
             blog.content = content
 
             blog.put()
-            self.redirect('/')
+            self.redirect('/post/' + id)
         else:
             self.response.set_status(404)
             self.render('/404_error.html')

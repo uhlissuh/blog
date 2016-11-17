@@ -38,6 +38,8 @@ class Registration(Handler):
         verify = self.request.get("verify")
         email = self.request.get("email")
 
+        print("username is", username)
+
         username_error = ""
         password_error = ""
         verify_error = ""
@@ -68,4 +70,4 @@ class Registration(Handler):
                 user_exists_error = "this user already exists"
                 self.write_form(user_exists_error = user_exists_error)
         else:
-            self.write_form(username_error, password_error, verify_error, email_error, username, email)
+            self.write_form(username_error, password_error, verify_error, user_exists_error, email_error, username, email)
