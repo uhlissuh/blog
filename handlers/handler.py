@@ -24,3 +24,7 @@ class Handler(webapp2.RequestHandler):
 
     def logout(self):
         self.response.headers.add_header('Set-Cookie','id=; Path=/')
+
+    def render_404(self):
+        self.response.set_status(404)
+        self.render('/404_error.html')

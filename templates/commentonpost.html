@@ -1,11 +1,12 @@
 <html>
-
+{% extends "front.html" %}
   <head>
-    <title>Comment on Post</title>
+    {% block title %}Comment{% endblock %}
   </head>
 
   <body>
-    <a href="/"><h1>Alissa's Blog</h1></a>
+    {% block content %}
+
     <h2>{{subject}}</h2>
 
     {% if not belongs_to_current_user %}
@@ -51,8 +52,8 @@
       <div class="error">{{error}}</div>
       <input type="submit"/>
     </form>
-
-
+    
+    {% endblock %}
   </body>
 
 </html>

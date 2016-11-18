@@ -1,8 +1,10 @@
 <html>
+{% extends "front.html" %}
 <head>
-  <title>Sign Up</title>
+{% block title %}Sign Up{% endblock %}
 </head>
 <body>
+  {% block content %}
   <a href="/login">Login</a>
   <form method="POST">
       <label>Username <input name="username" type="text" value="{{username}}"></label>
@@ -20,5 +22,6 @@
       <div>{{user_exists_error}}</div>
       <input type="submit"/>
   </form>
+  {% endblock %}
 </body>
 </html>

@@ -5,14 +5,18 @@ import models
 class EditPost(Handler):
     def get(self, id):
         blog = models.BlogPost.by_id(int(id))
-        subject = blog.subject
-        content = blog.content
-        blog_id = id
-        cookie_id = self.read_secure_cookie("id")
-        if cookie_id:
-            self.render("/editpost.html", subject = subject, content = content, blog_id = blog_id)
+        if blog:
+            author_id = blog.author_id
+            cookie_id = self.read_secure_cookie("id")
+            if cookie_id == author_id:
+                subject = blog.subject
+                content = blog.content
+                blog_id = id
+                self.render("/editpost.html", subject = subject, content = content, blog_id = blog_id)
+            else:
+                self.redirect('/login')
         else:
-            self.redirect('/login')
+            self.render_404()
 
     def post(self, id):
         blog = models.BlogPost.by_id(int(id))
@@ -28,5 +32,4 @@ class EditPost(Handler):
             blog.put()
             self.redirect('/post/' + id)
         else:
-            self.response.set_status(404)
-            self.render('/404_error.html')
+            self.render_404()

@@ -1,11 +1,15 @@
 <html>
+{% extends "front.html" %}
 
   <head>
-    <title>404 Error</title>
+    {% block title %}404{% endblock %}
   </head>
 
   <body>
+    {% block content %}
     404 - This action is not permitted
+    {% endblock %}
+
   </body>
 
 </html>

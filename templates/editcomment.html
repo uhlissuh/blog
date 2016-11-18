@@ -1,8 +1,11 @@
 <html>
+{% extends "front.html" %}
+
   <head>
-    <title>Edit Comment</title>
+    {% block title %}Edit Comment{% endblock %}
   </head>
   <body>
+    {% block content %}
     <form method="post">
       <label>
         <div>Edit Your Comment</div>
@@ -11,5 +14,6 @@
       <div class="error">{{error}}</div>
       <input type="submit"/>
     </form>
+    {% endblock %}
   </body>
 </html>

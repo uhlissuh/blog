@@ -1,12 +1,13 @@
 <html>
+{% extends "front.html" %}
 
   <head>
-      <title>Welcome</title>
+    {% block title %}Welcome{% endblock %}
   </head>
-
   <body>
-    <a href="/"><h1>Alissa's Blog</h1></a>
+    {% block content %}
     Welcome, {{username}}
+    {% endblock %}
   </body>
 
 </html>

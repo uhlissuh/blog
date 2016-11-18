@@ -1,28 +1,35 @@
+<!DOCTYPE html>
+
 <html>
   <head>
-    <title>Alissa's Blog</title>
+    <title>{% block title %}{% endblock %} - Alissa's Blog</title>
   </head>
   <body>
 
 
-    <h1>Alissa's Blog</h1>
-    <a href="/newpost">Create a Post</a>
-    {% if is_signed_in %}
-      <a href="/logout">logout</a>
-    {% else %}
-      <a href="/signup">Signup</a>
-      <a href="/login">Login</a>
-    {% endif %}
+    <a href="/"><h1>Alissa's Blog</h1></a>
 
-    {% for post in posts %}
-    <hr/>
-    <a href="/post/{{post.key().id()}}"><h3>{{post.subject}}</h3></a>
+    <div id="content">
+      {% block content %}
+        <a href="/newpost">Create a Post</a>
+        {% if is_signed_in %}
+          <a href="/logout">logout</a>
+        {% else %}
+          <a href="/signup">Signup</a>
+          <a href="/login">Login</a>
+        {% endif %}
 
-    <div>
-      {{post.content}}
+        {% for post in posts %}
+        <hr/>
+        <a href="/post/{{post.key().id()}}"><h3>{{post.subject}}</h3></a>
+
+        <div>
+          {{post.content}}
+        </div>
+        {% endfor %}
+
+      {% endblock %}
     </div>
-    {% endfor %}
-
 
   </body>
 </html>

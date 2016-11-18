@@ -1,14 +1,26 @@
+<html>
+{% extends "front.html" %}
+<head>
+  {% block title %}Edit Post{% endblock %}
+</head>
+<body>
+  {% block content %}
 
-<form method="post">
-  <label>
-    <div>Title</div>
-    <input type="text" name="subject" value="{{subject}}"/>
-  </label>
-  <label>
-    <div>Content</div>
-    <textarea name="content">{{content}}</textarea>
-  </label>
-  <div class="error">{{error}}</div>
-  <input type="submit"/>
-  <a href="/post/{{blog_id}}">cancel</a>
-</form>
+  <form method="post">
+    <label>
+      <div>Title</div>
+      <input type="text" name="subject" value="{{subject}}"/>
+    </label>
+    <label>
+      <div>Content</div>
+      <textarea name="content">{{content}}</textarea>
+    </label>
+    <div class="error">{{error}}</div>
+    <input type="submit"/>
+    <a href="/post/{{blog_id}}">cancel</a>
+  </form>
+  {% endblock %}
+
+</body>
+
+</html>
